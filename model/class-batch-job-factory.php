@@ -35,6 +35,7 @@ class Batch_Job_Factory
                 `last_batch_processed` int DEFAULT NULL,
                 `completed` bit(1) NOT NULL DEFAULT b'0',
                 `completed_at` int DEFAULT NULL,
+                `postprocessed_data` text,
                 `created_at` int NOT NULL DEFAULT 0,
                 `updated_at` int NOT NULL DEFAULT 0,
                 PRIMARY KEY (id)

@@ -101,6 +101,15 @@ class Batch_Job
         );
     }
 
+    public function set_job_postprocessed_data( int $job_id, $postprocessed_data )
+    {
+        return $this->wpdb->update(
+            $this->jobs_table,
+            [ 'postprocessed_data' => $postprocessed_data ],
+            [ 'id'=> $job_id ]
+        );
+    }
+
     public function set_batch_exec_time( int $batch_id, int $exec_time )
     {
         return $this->wpdb->update(

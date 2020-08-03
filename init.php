@@ -18,21 +18,26 @@ if ( ! defined( 'WPINC' ) ) {
 require plugin_dir_path( __FILE__ ) . 'defs.php'; // varaible defs here.
 require plugin_dir_path( __FILE__ ) . 'helpers.php'; // helper function here.
 require plugin_dir_path( __FILE__ ) . 'model'.DIRECTORY_SEPARATOR.'model.php'; // helper function here.
-
 require plugin_dir_path( __FILE__ ) . 'class-wp-batch-job.php';
 require plugin_dir_path( __FILE__ ) . 'class-batch-factory.php';
 require plugin_dir_path( __FILE__ ) . 'class-batch.php';
 require plugin_dir_path( __FILE__ ) . 'class-job.php';
 require plugin_dir_path( __FILE__ ) . 'class-job-factory.php';
 require plugin_dir_path( __FILE__ ) . 'class-register-job-files.php';
+require plugin_dir_path( __FILE__ ) . 'class-job-classes-directory.php';
+require plugin_dir_path( __FILE__ ) . 'class-register-jobs.php';
 
 
 $wbj = new WP_Batch_Job();
 $wbj->run();
 
-$rjf = new Register_Job_Files();
-$rjf->run();
+$wbj_rjf = new Register_Job_Files();
+$wbj_rjf->run();
 
+// this will be used as a global variable, hence the caps.
+$WBJ_JOBS = new Job_Classes_Directory();
+$wbj_rj = new Register_Jobs( $WBJ_JOBS );
+$wbj_rj->run();
 
 /** Sample Test File ***/
 require plugin_dir_path( __FILE__ ) . 'class-sample-job-test.php';

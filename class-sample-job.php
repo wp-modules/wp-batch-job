@@ -7,13 +7,11 @@ class job_test extends WBJ\Job {
         foreach( $data as $each){
             $sum += $each;
         }
-        sleep(10);
         echo "Sum is $sum";
         return $sum;
     }
     
     public function after_final(){
-        echo "Hello";
-        return;
+        return "Final Processed";
     }
 }

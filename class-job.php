@@ -39,6 +39,7 @@ abstract class Job {
         $this->last_batch_processed = $db_job->last_batch_processed;
         $this->completed = $db_job->completed;
         $this->completed_at = $db_job->completed_at;
+        $this->postprocessed_data = $db_job->postprocessed_data;
         $this->created_at = $db_job->created_at;
         $this->updated_at = $db_job->updated_at;
 
@@ -67,7 +68,8 @@ abstract class Job {
             $this->completed( $completed_at );
             $this->completed = 1;
             $this->completed_at = $completed_at;
-            $this->after_final();
+            $postprocessed_data = $this->after_final();
+            $this->set_postprocessed_data( $postprocessed_data );
         }
         return $batch;
         
@@ -81,7 +83,12 @@ abstract class Job {
     public function get_preprocessed_data()
     {
         return $this->preprocessed_data;
-    } 
+    }
+
+    public function get_post_processed_data()
+    {
+        return $this->postprocessed_data;
+    }
 
     public function started( $started_at )
     {
@@ -103,9 +110,16 @@ abstract class Job {
         return new Batch( $next_batch_id );
     }
 
-    private function update_batch_processed($last_batch_id)
+    private function update_batch_processed( $last_batch_id )
     {
         $this->batch_processed = $this->bjm->set_batches_processed($this->job_id, $last_batch_id);
+    }
+
+    public function set_postprocessed_data( $postprocessed_data )
+    {
+        $this->postprocessed_data = $postprocessed_data;
+        $postprocessed_data = maybe_serialize($postprocessed_data);
+        $this->batch_processed = $this->bjm->set_job_postprocessed_data( $this->job_id , $postprocessed_data);
     }
 
     abstract function process_batch( $job_id, $batch );
