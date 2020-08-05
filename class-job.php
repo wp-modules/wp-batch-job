@@ -3,12 +3,13 @@ namespace WBJ;
 use WBJ\Model\Batch_Job;
 
 abstract class Job {
+    
     private $job_id;
     private $preprocessed_data;
     private $all_data;
     private $exec_time_per_batch;
     private $is_serial;
-    private $has_started;
+    private $started;
     private $started_at;
     private $batch_count;
     private $batch_processed;
@@ -32,7 +33,7 @@ abstract class Job {
         $this->all_data = maybe_unserialize($db_job->all_data);
         $this->exec_time_per_batch = $db_job->exec_time_per_batch;
         $this->is_serial = $db_job->is_serial;
-        $this->has_started = $db_job->has_started;
+        $this->started = $db_job->started;
         $this->started_at = $db_job->started_at;
         $this->batch_count = $db_job->batch_count;
         $this->batch_processed = $db_job->batch_processed;
@@ -53,19 +54,19 @@ abstract class Job {
         }
         $started_at = time();
         $batch->started( $started_at );
-        if( !$this->has_started ){
+        if( !$this->started ){
             $this->started( $started_at );
         }
         $processed_data = $this->process_batch( $this->job_id, $batch );
         $batch->set_processed_data( $processed_data );
         $completed_at = time();
-        $batch->completed( $completed_at );
+        $batch->set_completed( $completed_at );
         $exec_time = ( $completed_at - $started_at );
         $batch->set_exec_time( $exec_time );
         $this->update_batch_processed( $batch->get_id() );
         if( $this->batch_processed == $this->batch_count ) 
         {
-            $this->completed( $completed_at );
+            $this->set_completed( $completed_at );
             $this->completed = 1;
             $this->completed_at = $completed_at;
             $postprocessed_data = $this->after_final();
@@ -92,13 +93,22 @@ abstract class Job {
 
     public function started( $started_at )
     {
-        return $this->bjm->set_job_has_started( $this->job_id, $started_at );
+        $this->started = 1;
+        $this->started_at = $started_at;
+        return $this->bjm->set_job_started( $this->job_id, $started_at );
     }
 
-    public function completed( $completed_at )
+    public function set_completed( $completed_at )
     {
+        $this->completed = 1;
+        $this->completed_at = $completed_at;
         return $this->bjm->set_job_completed( $this->job_id, $completed_at );
     } 
+
+    public function get_batch_count()
+    {
+        return $this->batch_count;
+    }
 
     public function next_batch()
     {

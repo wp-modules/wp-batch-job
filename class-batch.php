@@ -5,7 +5,10 @@ use WBJ\Model\Batch_Job;
 class Batch {
 
     private $batch_id;
-    private $has_started;
+    private $started;
+    private $started_at;
+    private $completed;
+    private $completed_at;
     private $bjm; //batch_job_model
 
     public function __construct( int $batch_id )
@@ -17,6 +20,10 @@ class Batch {
             throw new \Exception( "Batch with id:{$batch_id} not found in database." );
         }
         $this->batch_id = $db_batch->id;
+        $this->started = $db_batch->started;
+        $this->started_at = $db_batch->started_at;
+        $this->completed = $db_batch->completed;
+        $this->completed_at = $db_batch->completed_at;
         $this->data = maybe_unserialize($db_batch->data);
     }
 
@@ -30,13 +37,17 @@ class Batch {
         return $this->data;
     } 
 
-    public function started( $started_at )
+    public function set_started( $started_at )
     {
-        return $this->bjm->set_batch_has_started( $this->batch_id, $started_at );
+        $this->started = 1;
+        $this->started_at = $started_at;
+        return $this->bjm->set_batch_started( $this->batch_id, $started_at );
     } 
 
-    public function completed( $completed_at )
+    public function set_completed( $completed_at )
     {
+        $this->completed = 1;
+        $this->completed_at = $completed_at;
         return $this->bjm->set_batch_completed( $this->batch_id, $completed_at );
     } 
 

@@ -48,7 +48,7 @@ class Batch_Job
 
     public function get_next_batch_id( int $job_id )
     {
-        return $this->wpdb->get_var( $this->wpdb->prepare( "select id from {$this->batches_table} where job_id=%d and has_started = 0 limit 0,1", [ $job_id ] ) );
+        return $this->wpdb->get_var( $this->wpdb->prepare( "select id from {$this->batches_table} where job_id=%d and started = 0 limit 0,1", [ $job_id ] ) );
     }
 
     public function set_batches_processed( int $job_id, int $last_batch_id )
@@ -66,11 +66,11 @@ class Batch_Job
         return $batches_processed;
     }
 
-    public function set_batch_has_started( int $batch_id, int $started_at )
+    public function set_batch_started( int $batch_id, int $started_at )
     {
         return $this->wpdb->update(
             $this->batches_table,
-            [ 'has_started' => 1, 'started_at'  => $started_at ],
+            [ 'started' => 1, 'started_at'  => $started_at ],
             [ 'id'=> $batch_id ]
         );
     }
@@ -84,10 +84,10 @@ class Batch_Job
         );
     }
 
-    public function set_job_has_started( int $job_id, int $started_at ){
+    public function set_job_started( int $job_id, int $started_at ){
         return $this->wpdb->update(
             $this->jobs_table,
-            [ 'has_started' => 1, 'started_at'  => $started_at ],
+            [ 'started' => 1, 'started_at'  => $started_at ],
             [ 'id'=> $job_id ]
         );
     }

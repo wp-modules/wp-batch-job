@@ -21,7 +21,7 @@ class Batch_Factory {
     private function save_batch($data):int{
         $cols['job_id'] = $this->job_id; $format[] = '%d';
         $cols['data'] = maybe_serialize($data); $format[] = '%s';
-        $cols['has_started'] = 0; $format[] = '%d';
+        $cols['started'] = 0; $format[] = '%d';
         $cols['completed'] = 0; $format[] = '%d';
         return $this->bjm->save_batch( $cols, $format );
     }

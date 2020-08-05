@@ -26,6 +26,7 @@ require plugin_dir_path( __FILE__ ) . 'class-job-factory.php';
 require plugin_dir_path( __FILE__ ) . 'class-register-job-files.php';
 require plugin_dir_path( __FILE__ ) . 'class-job-classes-directory.php';
 require plugin_dir_path( __FILE__ ) . 'class-register-jobs.php';
+require plugin_dir_path( __FILE__ ) . 'class-job-ajaxify.php';
 
 
 $wbj = new WP_Batch_Job();
@@ -38,6 +39,9 @@ $wbj_rjf->run();
 $WBJ_JOBS = new Job_Classes_Directory();
 $wbj_rj = new Register_Jobs( $WBJ_JOBS );
 $wbj_rj->run();
+
+$wbj_ja = new Job_Ajaxify( $WBJ_JOBS );
+$wbj_ja->run();
 
 /** Sample Test File ***/
 require plugin_dir_path( __FILE__ ) . 'class-sample-job-test.php';

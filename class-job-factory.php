@@ -58,7 +58,7 @@ abstract class Job_Factory {
             $cols['preprocessed_data'] = maybe_serialize($this->preprocessed_data); $format[] = '%s'; 
         $cols['all_data'] = maybe_serialize($this->all_data); $format[] = '%s';
         $cols['is_serial'] = $this->is_serial; $format[] = '%d';
-        $cols['has_started'] = 0; $format[] = '%d';
+        $cols['started'] = 0; $format[] = '%d';
         $cols['batch_processed'] = 0; $format[] = '%d';
         $cols['batch_count'] = ceil( sizeof($this->all_data)/$this->batch_size ); $format[] = '%d';
         $cols['exec_time_per_batch'] = $this->exec_time_per_batch; $format[] = '%d';
